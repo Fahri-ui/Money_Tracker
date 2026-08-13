@@ -46,6 +46,13 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --color-primary: #3B82D6;
+  --color-primary-dark: #2E6FC9;
+  --color-secondary: #8DD3F8;
+  --color-income: #0E8B9E;
+  --color-expense: #F0956B;
+  --color-background: #F7FAFC;
+  --color-foreground: #1A2433;
 }
 
 :root {
@@ -115,6 +122,11 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
 }
 
 @layer base {
