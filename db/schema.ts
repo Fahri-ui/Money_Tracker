@@ -8,7 +8,7 @@ export const users = pgTable("users", {
     email: varchar("email", { length:255 }).notNull().unique(),
     name: varchar("name", {length:100}),
     image: text("image"),
-    emailVerified: timestamp("emial_verified"),
+    emailVerified: timestamp("email_verified"),
     createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -24,7 +24,7 @@ export const accounts = pgTable("accounts", {
     userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
     type: text("type").$type<AdapterAccountType>().notNull(),
     provider: text("provider").notNull(),
-    providerAccountId: text("provider_account_id").notNull().notNull(),
+    providerAccountId: text("provider_account_id").notNull(),
     refresh_token: text("refresh_token"),
     access_token: text("access_token"),
     expires_at: integer("expires_at"),
@@ -61,6 +61,6 @@ export const monthlyReports = pgTable("monthly_reports", {
     periodMonth: varchar("period_month", { length: 7 }).notNull(),
     totalIncome: numeric("total_income", { precision: 15, scale: 2 }).default("0"),
     totalExpense: numeric("total_expense", { precision: 15, scale: 2 }).default("0"),
-    netBalace: numeric("net_balance", { precision: 15, scale: 2 }).default("0"),
+    netBalance: numeric("net_balance", { precision: 15, scale: 2 }).default("0"),
     generatedAt: timestamp("generated_at").defaultNow(),
 })

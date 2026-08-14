@@ -15,6 +15,13 @@
       "when": 1786544495468,
       "tag": "0001_fluffy_warstar",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1786716598696,
+      "tag": "0002_hard_tyger_tiger",
+      "breakpoints": true
     }
   ]
 }

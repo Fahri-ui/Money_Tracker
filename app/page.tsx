@@ -70,18 +70,14 @@ export default async function DashboardPage() {
           </p>
         ) : (
           <div className="space-y-2">
-            {reports.map((r) => {
-              const netBalance = Number(r.totalIncome ?? 0) - Number(r.totalExpense ?? 0);
-
-              return (
-                <div key={r.id} className="flex items-center justify-between border-b border-gray-100 py-2 last:border-0">
-                  <span className="text-sm font-medium">{r.periodMonth}</span>
-                  <span className="text-sm font-semibold">
-                    {formatRupiah(netBalance)}
-                  </span>
-                </div>
-              );
-            })}
+            {reports.map((r) => (
+              <div key={r.id} className="flex items-center justify-between border-b border-gray-100 py-2 last:border-0">
+                <span className="text-sm font-medium">{r.periodMonth}</span>
+                <span className="text-sm font-semibold">
+                  {formatRupiah(Number(r.netBalance))}
+                </span>
+              </div>
+            ))}
           </div>
         )}
       </div>
