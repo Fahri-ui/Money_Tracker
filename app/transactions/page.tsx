@@ -1,7 +1,7 @@
 import { getTransactions } from "@/actions/transactions";
 import { getCategories } from "@/actions/categories";
-import TransactionForm from "./transaction-form";
-import DeleteButton from "./delete-button";
+import TransactionForm from "@/components/transactions/transaction-form";
+import DeleteButton from "@/components/transactions/delete-button";
 
 export default async function TransactionsPage() {
     const [transactionList, categoryList] = await Promise.all([
