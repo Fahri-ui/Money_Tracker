@@ -222,3 +222,57 @@ export async function getExpenseInsight() {
 
   return { dailyAverage, percentageChange };
 }
+
+// Rata-rata per transaksi + pertumbuhan income dibanding bulan lalu
+export async function getIncomeInsight() {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+
+  const now = new Date();
+  const monthStart = format(startOfMonth(now), "yyyy-MM-dd");
+  const monthEnd = format(endOfMonth(now), "yyyy-MM-dd");
+  const lastMonthStart = format(startOfMonth(subMonths(now, 1)), "yyyy-MM-dd");
+  const lastMonthEnd = format(endOfMonth(subMonths(now, 1)), "yyyy-MM-dd");
+
+  const thisMonthResult = await db
+    .select({
+      total: sql<string>`COALESCE(SUM(${transactions.amount}), 0)`,
+      count: sql<string>`COUNT(*)`,
+    })
+    .from(transactions)
+    .where(
+      and(
+        eq(transactions.userId, session.user.id),
+        eq(transactions.type, "income"),
+        gte(transactions.transactionDate, monthStart),
+        lte(transactions.transactionDate, monthEnd)
+      )
+    );
+
+  const lastMonthResult = await db
+    .select({ total: sql<string>`COALESCE(SUM(${transactions.amount}), 0)` })
+    .from(transactions)
+    .where(
+      and(
+        eq(transactions.userId, session.user.id),
+        eq(transactions.type, "income"),
+        gte(transactions.transactionDate, lastMonthStart),
+        lte(transactions.transactionDate, lastMonthEnd)
+      )
+    );
+
+  const totalThisMonth = Number(thisMonthResult[0].total);
+  const totalLastMonth = Number(lastMonthResult[0].total);
+  const countThisMonth = Number(thisMonthResult[0].count);
+
+  const averagePerTransaction = countThisMonth > 0 ? totalThisMonth / countThisMonth : 0;
+
+  let percentageChange = 0;
+  if (totalLastMonth > 0) {
+    percentageChange = ((totalThisMonth - totalLastMonth) / totalLastMonth) * 100;
+  } else if (totalThisMonth > 0) {
+    percentageChange = 100;
+  }
+
+  return { averagePerTransaction, percentageChange };
+}

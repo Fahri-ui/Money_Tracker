@@ -26,6 +26,17 @@ function monthLabel(periodMonth: string) {
   return formatDate(new Date(Number(year), Number(month) - 1), "MMMM yyyy", { locale: idLocale });
 }
 
+async function loadImageAsBase64(path: string): Promise<string> {
+  const response = await fetch(path);
+  const blob = await response.blob();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
 export default function ReportsTable({ reports }: { reports: Report[] }) {
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
@@ -36,8 +47,28 @@ export default function ReportsTable({ reports }: { reports: Report[] }) {
       const transactionList = await getTransactionsForMonth(report.periodMonth);
 
       const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
 
-      // Kop / Judul Laporan
+      // === WATERMARK LOGO (digambar duluan, jadi lapisan paling belakang) ===
+      try {
+        const logoBase64 = await loadImageAsBase64("/icon.png");
+
+        doc.saveGraphicsState();
+        // @ts-expect-error - GState belum punya tipe resmi di jsPDF
+        doc.setGState(new doc.GState({ opacity: 0.08 }));
+
+        const watermarkSize = 120; // ukuran watermark dalam mm
+        const centerX = (pageWidth - watermarkSize) / 2;
+        const centerY = (pageHeight - watermarkSize) / 2;
+
+        doc.addImage(logoBase64, "PNG", centerX, centerY, watermarkSize, watermarkSize);
+        doc.restoreGraphicsState();
+      } catch (imgError) {
+        console.warn("Watermark logo gagal dimuat, PDF tetap dibuat tanpa watermark:", imgError);
+      }
+
+      // === KOP / JUDUL LAPORAN (kode yang sudah ada sebelumnya) ===
       doc.setFontSize(16);
       doc.setFont("helvetica", "bold");
       doc.text("Laporan Keuangan Bulanan", 14, 18);
@@ -63,10 +94,15 @@ export default function ReportsTable({ reports }: { reports: Report[] }) {
           formatRupiah(Number(t.amount)),
           t.note || "-",
         ]),
-        headStyles: { fillColor: [59, 130, 214] }, // warna primary tema kita
+        headStyles: { fillColor: [59, 130, 214] },
         styles: { fontSize: 9 },
         columnStyles: { 3: { halign: "right" } },
       });
+
+      // === FOOTER: credit kecil di bawah halaman (bonus) ===
+      doc.setFontSize(8);
+      doc.setTextColor(150);
+      doc.text("Dibuat otomatis oleh Money Tracker", 14, pageHeight - 10);
 
       doc.save(`Laporan-${report.periodMonth}.pdf`);
     } catch (error) {

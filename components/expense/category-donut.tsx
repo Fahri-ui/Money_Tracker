@@ -21,7 +21,6 @@ export default function CategoryDonut({ data }: { data: CategoryData[] }) {
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-      <h2 className="mb-2 text-sm font-semibold">Pengeluaran per Kategori</h2>
 
       <div className="relative h-56 w-full">
         <ResponsiveContainer width="100%" height="100%">
