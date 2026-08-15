@@ -9,6 +9,7 @@ export const users = pgTable("users", {
     name: varchar("name", {length:100}),
     image: text("image"),
     emailVerified: timestamp("email_verified"),
+    monthlyBudget: numeric("monthly_budget", { precision: 15, scale: 2 }).default("0"), // ✅ tambahan baru
     createdAt: timestamp("created_at").defaultNow(),
 });
 

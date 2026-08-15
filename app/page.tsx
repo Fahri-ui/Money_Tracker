@@ -1,9 +1,17 @@
 // app/page.tsx
-import { auth, signOut } from "@/auth";
 import { redirect } from "next/navigation";
-import { getDashboardSummary, getMonthlyTrend, getRecentMonthlyReports } from "@/actions/dashboard";
+import { auth } from "@/auth";
+import {
+  getDashboardSummary,
+  getMonthlyTrend,
+  getRecentMonthlyReports,
+  getTodayExpenses,
+  getTopSpendingCategory,
+} from "@/actions/dashboard";
 import TrendChart from "@/components/dashboard/trend-chart";
-import { LogOut } from "lucide-react";
+import TodayExpenses from "@/components/dashboard/today-expenses";
+import ReportsTable from "@/components/dashboard/reports-table";
+import TopCategoryWidget from "@/components/dashboard/top-category";
 
 function formatRupiah(amount: number) {
   return `Rp${amount.toLocaleString("id-ID")}`;
@@ -13,31 +21,17 @@ export default async function DashboardPage() {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const [summary, trend, reports] = await Promise.all([
+  const [summary, trend, reports, todayExpenses, topCategory] = await Promise.all([
     getDashboardSummary(),
     getMonthlyTrend(),
     getRecentMonthlyReports(),
+    getTodayExpenses(),
+    getTopSpendingCategory(),
   ]);
 
   return (
     <div className="p-4 md:p-6">
-      {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <p className="text-sm text-gray-500">Halo, {session.user?.name?.split(" ")[0]} 👋</p>
-          <h1 className="text-xl font-bold">Ringkasan Keuangan</h1>
-        </div>
-        <form
-          action={async () => {
-            "use server";
-            await signOut({ redirectTo: "/login" });
-          }}
-        >
-          <button type="submit" className="rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-red-500">
-            <LogOut size={20} />
-          </button>
-        </form>
-      </div>
+      <h1 className="mb-6 text-xl font-bold">Ringkasan Keuangan</h1>
 
       {/* Kartu Ringkasan */}
       <div className="mb-6 grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -55,31 +49,26 @@ export default async function DashboardPage() {
         </div>
       </div>
 
+      {/* Widget Kategori Terbesar (Bonus) */}
+      <div className="mb-6">
+        <TopCategoryWidget data={topCategory} />
+      </div>
+
       {/* Line Chart */}
       <div className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
         <h2 className="mb-2 text-sm font-semibold">Tren 6 Bulan Terakhir</h2>
         <TrendChart data={trend} />
       </div>
 
-      {/* Riwayat Laporan Bulanan */}
+      {/* Rincian Pengeluaran Hari Ini */}
+      <div className="mb-6">
+        <TodayExpenses data={todayExpenses} />
+      </div>
+
+      {/* Tabel Riwayat Laporan Bulanan */}
       <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
         <h2 className="mb-3 text-sm font-semibold">Riwayat Laporan Bulanan</h2>
-        {reports.length === 0 ? (
-          <p className="text-sm text-gray-400">
-            Belum ada laporan bulanan. Laporan akan dibuat otomatis setiap awal bulan.
-          </p>
-        ) : (
-          <div className="space-y-2">
-            {reports.map((r) => (
-              <div key={r.id} className="flex items-center justify-between border-b border-gray-100 py-2 last:border-0">
-                <span className="text-sm font-medium">{r.periodMonth}</span>
-                <span className="text-sm font-semibold">
-                  {formatRupiah(Number(r.netBalance))}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
+        <ReportsTable reports={reports} />
       </div>
     </div>
   );

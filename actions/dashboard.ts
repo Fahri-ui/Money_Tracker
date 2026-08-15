@@ -2,7 +2,7 @@
 "use server";
 
 import { db } from "@/db";
-import { transactions, monthlyReports } from "@/db/schema";
+import { transactions, monthlyReports, categories } from "@/db/schema";
 import { auth } from "@/auth";
 import { eq, and, gte, lte, sql, desc } from "drizzle-orm";
 import { startOfMonth, endOfMonth, subMonths, format } from "date-fns";
@@ -98,4 +98,63 @@ export async function getRecentMonthlyReports() {
     .where(eq(monthlyReports.userId, session.user.id))
     .orderBy(desc(monthlyReports.periodMonth))
     .limit(6);
+}
+
+// Rincian pengeluaran KHUSUS hari ini
+export async function getTodayExpenses() {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+
+  const today = format(new Date(), "yyyy-MM-dd");
+
+  return db
+    .select({
+      id: transactions.id,
+      amount: transactions.amount,
+      note: transactions.note,
+      createdAt: transactions.createdAt,
+      categoryName: categories.name,
+      categoryIcon: categories.icon,
+    })
+    .from(transactions)
+    .leftJoin(categories, eq(transactions.categoryId, categories.id))
+    .where(
+      and(
+        eq(transactions.userId, session.user.id),
+        eq(transactions.type, "expense"),
+        eq(transactions.transactionDate, today)
+      )
+    )
+    .orderBy(desc(transactions.createdAt));
+}
+
+export async function getTopSpendingCategory() {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+
+  const now = new Date();
+  const monthStart = format(startOfMonth(now), "yyyy-MM-dd");
+  const monthEnd = format(endOfMonth(now), "yyyy-MM-dd");
+
+  const rows = await db
+    .select({
+      categoryName: categories.name,
+      categoryIcon: categories.icon,
+      total: sql<string>`SUM(${transactions.amount})`,
+    })
+    .from(transactions)
+    .leftJoin(categories, eq(transactions.categoryId, categories.id))
+    .where(
+      and(
+        eq(transactions.userId, session.user.id),
+        eq(transactions.type, "expense"),
+        gte(transactions.transactionDate, monthStart),
+        lte(transactions.transactionDate, monthEnd)
+      )
+    )
+    .groupBy(categories.name, categories.icon)
+    .orderBy(desc(sql`SUM(${transactions.amount})`))
+    .limit(1);
+
+  return rows[0] ?? null;
 }

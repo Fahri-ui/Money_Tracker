@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "monthly_budget" numeric(15, 2) DEFAULT '0';
