@@ -7,7 +7,6 @@ import { auth } from "@/auth";
 import { eq, and, gte, lte, sql, desc } from "drizzle-orm";
 import { startOfMonth, endOfMonth, subMonths, format } from "date-fns";
 
-// Ambil transaksi bulan ini, berdasarkan tipe (income/expense), lengkap dengan nama kategori
 export async function getTransactionsThisMonth(type: "income" | "expense") {
     const session = await auth();
     if (!session?.user?.id) throw new Error("Unauthorized");
@@ -22,6 +21,7 @@ export async function getTransactionsThisMonth(type: "income" | "expense") {
         amount: transactions.amount,
         note: transactions.note,
         transactionDate: transactions.transactionDate,
+        createdAt: transactions.createdAt,
         categoryName: categories.name,
         categoryIcon: categories.icon,
     })
@@ -35,7 +35,7 @@ export async function getTransactionsThisMonth(type: "income" | "expense") {
             lte(transactions.transactionDate, monthEnd)
         )
     )
-    .orderBy(transactions.transactionDate);
+    .orderBy(desc(transactions.transactionDate), desc(transactions.createdAt)); // ✅ diganti — terbaru duluan, dengan tiebreaker jam
 }
 
 // Total per bulan (6 bulan terakhir) untuk 1 tipe tertentu — dipakai Bar Chart

@@ -13,16 +13,14 @@ export default function TopCategoryWidget({ data }: { data: TopCategory }) {
   if (!data) return null;
 
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#F0956B]/15 text-2xl">
-        {data.categoryIcon || "📌"}
-      </div>
-      <div>
-        <p className="text-xs text-gray-400">Pengeluaran terbesar bulan ini</p>
-        <p className="text-sm font-semibold">
+    <div className="flex items-center gap-3 rounded-2xl border border-expense/15 bg-expense/5 px-4 py-3">
+      <span className="text-xl">{data.categoryIcon || "📌"}</span>
+      <p className="text-xs text-gray-600">
+        Pengeluaran terbesar bulan ini:{" "}
+        <span className="font-semibold text-expense">
           {data.categoryName} — {formatRupiah(Number(data.total))}
-        </p>
-      </div>
+        </span>
+      </p>
     </div>
   );
 }

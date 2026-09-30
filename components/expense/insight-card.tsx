@@ -7,7 +7,7 @@ type InsightProps = {
 };
 
 function formatRupiah(amount: number) {
-  return `Rp${amount.toLocaleString("id-ID")}`;
+  return `Rp${Math.round(amount).toLocaleString("id-ID")}`;
 }
 
 export default function InsightCard({ dailyAverage, percentageChange }: InsightProps) {
