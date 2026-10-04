@@ -11,9 +11,9 @@ export default async function Header() {
   return (
     <header className="sticky top-0 z-40 flex items-center justify-between border-b border-gray-100 bg-white/80 px-4 py-3 backdrop-blur-md md:px-6">
       <div className="flex items-center gap-3">
-        <div className="md:hidden">
+        {/* <div className="md:hidden">
           <Image src="/logo.png" alt="Money Tracker" width={30} height={30} className="rounded-lg" />
-        </div>
+        </div> */}
 
         <div className="flex items-center gap-2.5">
           {session?.user?.image ? (
