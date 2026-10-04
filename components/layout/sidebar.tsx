@@ -18,27 +18,28 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden md:flex md:fixed md:inset-y-0 md:w-64 md:flex-col border-r border-gray-200 bg-white px-4 py-6">
-      {/* Logo di atas */}
-      <div className="mb-8 flex items-center gap-2 px-2">
+    <aside className="hidden md:flex md:fixed md:inset-y-0 md:w-64 md:flex-col border-r border-gray-100 bg-white p-3">
+      {/* Panel logo — warna solid, kontras dari daftar menu */}
+      <div className="mb-6 flex items-center gap-3 rounded-2xl bg-primary-dark px-4 py-4 shadow-sm">
         <Image src="/icon.png" alt="Money Tracker" width={36} height={36} className="rounded-lg" />
-        <span className="text-lg font-bold text-primary">Money Tracker</span>
+        <span className="text-base font-bold tracking-tight text-white">Money Tracker</span>
       </div>
 
-      <nav className="flex flex-col gap-2">
+      <nav className="flex flex-col gap-1 px-1">
         {menu.map((item) => {
           const isActive = pathname === item.href;
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 ${
-                isActive
-                  ? "-translate-y-0.5 bg-primary text-white shadow-md shadow-primary/40"
-                  : "text-foreground hover:bg-secondary/30"
+              className={`relative flex items-center gap-3 rounded-xl py-2.5 pl-4 pr-3 text-sm font-medium transition-all duration-150 ${
+                isActive ? "bg-primary/10 font-semibold text-primary" : "text-gray-500 hover:bg-gray-50 hover:text-foreground"
               }`}
             >
-              <item.icon size={20} />
+              {isActive && (
+                <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-primary" />
+              )}
+              <item.icon size={19} />
               {item.label}
             </Link>
           );

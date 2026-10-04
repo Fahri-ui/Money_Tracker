@@ -5,6 +5,13 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --color-primary: #2563EB;      /* был #3B82D6 — biru lebih jenuh */
+  --color-primary-dark: #1E3A8A; /* был #2E6FC9 — jadi warna "deep" untuk depth */
+  --color-secondary: #8DD3F8;
+  --color-income: #0D9488;       /* был #0E8B9E */
+  --color-expense: #EA580C;      /* был #F0956B */
+  --color-background: #F1F5F9;   /* был #F7FAFC */
+  --color-foreground: #0F1C2E;   /* был #1A2433 */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
@@ -51,8 +58,8 @@
   --color-secondary: #8DD3F8;
   --color-income: #0E8B9E;
   --color-expense: #F0956B;
-  --color-background: #F7FAFC;
-  --color-foreground: #1A2433;
+  /* --color-background: #F7FAFC;
+  --color-foreground: #1A2433; */
 }
 
 :root {

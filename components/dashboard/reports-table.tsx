@@ -122,44 +122,69 @@ export default function ReportsTable({ reports }: { reports: Report[] }) {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-gray-200 text-left text-xs text-gray-400">
-            <th className="py-2 pr-2 font-medium">No</th>
-            <th className="py-2 pr-2 font-medium">Bulan</th>
-            <th className="py-2 pr-2 font-medium text-right">Pemasukan</th>
-            <th className="py-2 pr-2 font-medium text-right">Pengeluaran</th>
-            <th className="py-2 pr-2 font-medium text-right">Sisa Saldo</th>
-            <th className="py-2 pl-2 font-medium text-center">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          {reports.map((r, index) => (
-            <tr key={r.id} className="border-b border-gray-100 last:border-0">
-              <td className="py-3 pr-2 text-gray-400">{index + 1}</td>
-              <td className="py-3 pr-2 font-medium capitalize">{monthLabel(r.periodMonth)}</td>
-              <td className="py-3 pr-2 text-right text-[#0E8B9E]">{formatRupiah(Number(r.totalIncome))}</td>
-              <td className="py-3 pr-2 text-right text-[#F0956B]">{formatRupiah(Number(r.totalExpense))}</td>
-              <td className="py-3 pr-2 text-right font-semibold">{formatRupiah(Number(r.netBalance))}</td>
-              <td className="py-3 pl-2 text-center">
-                <button
-                  onClick={() => handleDownload(r)}
-                  disabled={downloadingId === r.id}
-                  className="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-2.5 py-1.5 text-xs font-medium text-primary transition hover:bg-primary/20 disabled:opacity-50"
-                >
-                  {downloadingId === r.id ? (
-                    <Loader2 size={14} className="animate-spin" />
-                  ) : (
-                    <FileDown size={14} />
-                  )}
-                  PDF
-                </button>
-              </td>
+    <>
+      {/* Mobile: kartu per baris */}
+      <div className="space-y-2 md:hidden">
+        {reports.map((r, index) => (
+          <div key={r.id} className="rounded-xl border border-gray-100 p-3">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-xs font-medium capitalize text-gray-500">
+                #{index + 1} — {monthLabel(r.periodMonth)}
+              </span>
+              <button
+                onClick={() => handleDownload(r)}
+                disabled={downloadingId === r.id}
+                className="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-2.5 py-1.5 text-xs font-medium text-primary disabled:opacity-50"
+              >
+                {downloadingId === r.id ? <Loader2 size={14} className="animate-spin" /> : <FileDown size={14} />}
+                PDF
+              </button>
+            </div>
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-income">{formatRupiah(Number(r.totalIncome))}</span>
+              <span className="text-expense">{formatRupiah(Number(r.totalExpense))}</span>
+              <span className="font-bold">{formatRupiah(Number(r.netBalance))}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop: tabel penuh */}
+      <div className="hidden overflow-x-auto md:block">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-gray-100 text-left text-xs text-gray-400">
+              <th className="py-2 pr-2 font-medium">No</th>
+              <th className="py-2 pr-2 font-medium">Bulan</th>
+              <th className="py-2 pr-2 text-right font-medium">Pemasukan</th>
+              <th className="py-2 pr-2 text-right font-medium">Pengeluaran</th>
+              <th className="py-2 pr-2 text-right font-medium">Sisa Saldo</th>
+              <th className="py-2 pl-2 text-center font-medium">Aksi</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {reports.map((r, index) => (
+              <tr key={r.id} className="border-b border-gray-50 last:border-0">
+                <td className="py-3 pr-2 text-gray-400">{index + 1}</td>
+                <td className="py-3 pr-2 font-medium capitalize">{monthLabel(r.periodMonth)}</td>
+                <td className="py-3 pr-2 text-right text-income">{formatRupiah(Number(r.totalIncome))}</td>
+                <td className="py-3 pr-2 text-right text-expense">{formatRupiah(Number(r.totalExpense))}</td>
+                <td className="py-3 pr-2 text-right font-bold">{formatRupiah(Number(r.netBalance))}</td>
+                <td className="py-3 pl-2 text-center">
+                  <button
+                    onClick={() => handleDownload(r)}
+                    disabled={downloadingId === r.id}
+                    className="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-2.5 py-1.5 text-xs font-medium text-primary disabled:opacity-50"
+                  >
+                    {downloadingId === r.id ? <Loader2 size={14} className="animate-spin" /> : <FileDown size={14} />}
+                    PDF
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }

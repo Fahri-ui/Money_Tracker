@@ -27,7 +27,7 @@ export default async function RootLayout({
             <Sidebar />
             <div className="md:ml-64">
               <Header />
-              <main className="pb-24 md:pb-6">
+              <main className="pb-28 md:pb-6">
                 {children}
                 <Footer />
               </main>

@@ -24,8 +24,8 @@ export default function TrendChart({ data }: { data: TrendData[] }) {
                         formatter={(value: any) => `Rp ${Number(value || 0).toLocaleString()}`}
                     />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
-                    <Line type="monotone" dataKey="income" name="Pemasukan" stroke="#0E8B9E" strokeWidth={2} dot={{ r: 3 }} />
-                    <Line type="monotone" dataKey="expense" name="Pengeluaran" stroke="#F0956B" strokeWidth={2} dot={{ r: 3 }} />
+                    <Line type="monotone" dataKey="income" name="Pemasukan" stroke="#0D9488" strokeWidth={2} dot={{ r: 3 }} />
+                    <Line type="monotone" dataKey="expense" name="Pengeluaran" stroke="#EA580C" strokeWidth={2} dot={{ r: 3 }} />
                 </LineChart>
             </ResponsiveContainer>
         </div>

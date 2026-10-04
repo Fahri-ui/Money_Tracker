@@ -7,26 +7,30 @@ import { Home, TrendingDown, TrendingUp, Info, Plus } from "lucide-react";
 
 const menu = [
   { href: "/", label: "Beranda", icon: Home },
-  { href: "/expense", label: "Pengeluaran", icon: TrendingDown },
+  { href: "/expense", label: "Keluar", icon: TrendingDown },
   { href: "/transactions/new", label: "Tambah", icon: Plus, isFab: true },
-  { href: "/income", label: "Pemasukan", icon: TrendingUp },
-  { href: "/about", label: "Tentang", icon: Info },
+  { href: "/income", label: "Masuk", icon: TrendingUp },
+  { href: "/about", label: "Info", icon: Info },
 ];
 
 export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 flex items-center justify-around border-t border-gray-200 bg-white py-2 md:hidden">
+    <nav
+      className="fixed inset-x-3 bottom-3 z-50 flex items-center justify-around rounded-full border border-gray-100 bg-white/95 py-2 shadow-[0_8px_30px_rgba(15,28,46,0.14)] backdrop-blur-md md:hidden"
+      style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 0.5rem)" }}
+    >
       {menu.map((item) => {
         if (item.isFab) {
           return (
             <Link
               key={item.href}
               href={item.href}
-              className="-mt-8 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/40 transition active:scale-95"
+              className="-mt-9 flex h-16 w-16 items-center justify-center rounded-full text-white shadow-lg ring-4 ring-white transition active:scale-95"
+              style={{ background: "linear-gradient(145deg, #2563EB, #1E3A8A)" }}
             >
-              <item.icon size={26} />
+              <item.icon size={28} />
             </Link>
           );
         }
@@ -36,13 +40,11 @@ export default function BottomNav() {
           <Link
             key={item.href}
             href={item.href}
-            className={`flex flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-all duration-150 ${
-              isActive
-                ? "-translate-y-1 bg-primary text-white shadow-md shadow-primary/40"
-                : "text-gray-400"
+            className={`flex flex-col items-center gap-0.5 rounded-2xl px-3 py-1.5 text-[11px] font-medium transition-all duration-150 ${
+              isActive ? "bg-primary/10 text-primary" : "text-gray-400"
             }`}
           >
-            <item.icon size={20} />
+            <item.icon size={21} />
             {item.label}
           </Link>
         );

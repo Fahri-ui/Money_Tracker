@@ -7,7 +7,7 @@ type IncomeInsightProps = {
 };
 
 function formatRupiah(amount: number) {
-  return `Rp${amount.toLocaleString("id-ID")}`;
+  return `Rp${Math.round(amount).toLocaleString("id-ID")}`;
 }
 
 export default function IncomeInsight({ averagePerTransaction, percentageChange }: IncomeInsightProps) {

@@ -5,10 +5,11 @@ import { db } from "@/db";
 import { transactions, monthlyReports, users } from "@/db/schema";
 import { eq, and, gte, lte, sql } from "drizzle-orm";
 import { subMonths, startOfMonth, endOfMonth, format } from "date-fns";
+import { nowInWIB } from "@/lib/date"; // ✅ tambahan
 
 // Fungsi inti: generate laporan bulan LALU untuk SEMUA user
 export async function generateMonthlyReportsForAllUsers() {
-  const lastMonth = subMonths(new Date(), 1);
+  const lastMonth = subMonths(nowInWIB(), 1); // ✅ diganti
   const periodMonth = format(lastMonth, "yyyy-MM");
   const monthStart = format(startOfMonth(lastMonth), "yyyy-MM-dd");
   const monthEnd = format(endOfMonth(lastMonth), "yyyy-MM-dd");
